@@ -1,0 +1,70 @@
+# ─── Working documents (session artifacts, never committed) ──────────────────
+plan.md
+backlog.md
+journal.md
+journal.csv
+decisions.md
+
+# ─── Claude Code: personal files ─────────────────────────────────────────────
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/state/
+.claude/worktrees/
+
+# ─── Environment and secrets ─────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+*.pem
+*.key
+*.p12
+*.pfx
+secrets.json
+credentials.json
+*_credentials.json
+*_credentials.yaml
+.secrets/
+secrets/
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+._*
+Thumbs.db
+
+# ─── Editor ───────────────────────────────────────────────────────────────────
+.idea/
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*~
+.history/
+
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+.coverage
+
+# ─── Node (uncomment if needed) ───────────────────────────────────────────────
+# node_modules/
+# .next/
+# out/
+# coverage/
+# *.tsbuildinfo
+
+# ─── Misc ─────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
+.cache/
