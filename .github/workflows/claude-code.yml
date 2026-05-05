@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "Prompt for Claude (manual runs only)"
+        required: false
+        default: "Review this PR and suggest improvements"
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Replace the step below with your actual test command.
+      # Examples:
+      #   Python:  pip install -e ".[dev]" && pytest
+      #   Node:    npm ci && npm test
+      #   Go:      go test ./...
+      - name: Run tests
+        run: |
+          echo "Replace this with your test command"
+
+  claude-code:
+    name: Claude Code
+    runs-on: ubuntu-latest
+    # Manual dispatch only — prevents Claude from running on every push.
+    # Change to `pull_request` to run on every PR (requires ANTHROPIC_API_KEY secret).
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: ${{ inputs.prompt }}
+          # allowed_tools: "Bash Read Edit Write"  # uncomment to restrict tools

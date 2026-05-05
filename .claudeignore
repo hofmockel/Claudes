@@ -1,1 +1,24 @@
+# Working documents — session artifacts, not source of truth
 plan.md
+backlog.md
+journal.md
+journal.csv
+
+# Generated and build output
+*.pyc
+__pycache__/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+dist/
+build/
+
+# CI / GitHub artifacts
+.github/
+
+# Large data / index files
+*.db
+*.jsonl
+.claude/state/

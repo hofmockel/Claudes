@@ -1,0 +1,21 @@
+{
+  "_comment": "Copy to settings.local.json (gitignored). Add personal approvals here — ops you run often and don't want to confirm every time.",
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push origin *)",
+
+      "Bash(pip install*)",
+      "Bash(pip3 install*)",
+      "Bash(python -m pip*)",
+      "Bash(python3 -m pip*)",
+      "Bash(.venv/bin/python *)",
+      "Bash(.venv/bin/pytest*)",
+
+      "Bash(gh pr create*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh pr checkout*)"
+    ]
+  }
+}

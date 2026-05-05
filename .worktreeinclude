@@ -1,0 +1,12 @@
+# .worktreeinclude
+# Gitignored files to copy into new worktrees when Claude Code creates one.
+# One glob pattern per line. Paths relative to repo root.
+
+# Personal Claude settings
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Uncomment to share local env across all worktrees (do this only if worktrees
+# share the same external services — comment out for full isolation):
+# .env
+# .env.local
