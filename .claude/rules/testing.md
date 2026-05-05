@@ -40,3 +40,15 @@ These rules activate when editing test files.
 - New features require tests before the PR can merge
 - Deleted tests must be explicitly justified in the PR description
 - Do not write tests that always pass regardless of implementation (vacuous assertions, empty `expect` blocks)
+
+## Test order
+
+Write tests **after** the feature works, not before. TDD slows agentic iteration. Build until the path runs end-to-end, then lock behavior with tests in the same commit.
+
+## Environment isolation
+
+Tests must run against an isolated environment — separate DB, separate env vars. Never against dev or production data. If `TEST_DATABASE_URL` (or equivalent) is missing, fail fast instead of silently falling back.
+
+## UI validation
+
+For UI changes, never report "done" without a browser screenshot via Claude-in-Chrome MCP. Test the golden path and at least one edge case visually before commit.

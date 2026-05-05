@@ -26,3 +26,7 @@ These rules are always active regardless of which files are being edited.
 
 - Do not add a new dependency without checking for known CVEs (run `pip audit` or `npm audit`)
 - Pin versions in requirements files — avoid open ranges like `>=1.0` with no upper bound
+
+## Architecture timing
+
+Design authentication and authorization in **phase 1** of any multi-phase plan. Late-stage auth integration forces destructive resource replacements (schema rewrites, route restructuring, session-model churn).

@@ -2,6 +2,18 @@
 
 Source of truth for what the system should do. Code implements specs; specs don't document code.
 
+## When a spec is required
+
+- Change touches **≥3 files**, or
+- Adds **user-visible behavior** (new endpoint, CLI flag, UI, output format), or
+- Is **SME-driven** (domain expert defines the rule).
+
+Skip specs for typos, single-file refactors, lint fixes, dependency bumps.
+
+## One-page rule
+
+If a spec doesn't fit on a screen, split it. Three small specs > one bloated one.
+
 ## What belongs here
 
 - Feature behavior described from the user or API caller's perspective
