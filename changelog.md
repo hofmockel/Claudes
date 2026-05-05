@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- `/session-start` skill — daily on-ramp: preflight, unchecked backlog rows, last 5 journal entries, session-goal prompt.
+- `/session-start` skill — daily on-ramp: preflight, last handover replay, unchecked backlog rows, session-goal prompt.
 - `/handover` skill — writes a structured snapshot to `.claude/state/handover-YYYYMMDD-HHMM.md` for mid-session or pre-`/compact` use.
 - `Stop` hook (`.claude/hooks/stop.sh`) — auto-writes `.claude/state/last-session-handover.md` at session end. Always exits 0; never blocks.
 - `code-reviewer` sub-agent (`.claude/agents/code-reviewer.md`) — deep review for correctness, edge cases, type safety, and test coverage. Invoked by `/review` or directly.
@@ -16,16 +16,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `.claude/rules/testing.md`: test-after-implementation order, `TEST_DATABASE_URL` isolation requirement, UI screenshot validation via Claude-in-Chrome.
 - `.claude/rules/security.md`: auth/authz must be designed in phase 1 of multi-phase plans.
 - `.claude/rules/caveman.md`: clarifying questions must be presented as numbered menus, not open prompts.
-- `README.md`: Roles section (junior dev, senior dev, analyst, SMEs) and sub-agents reference.
+- `README.md`: Roles section (junior dev, senior dev, analyst, SMEs), sub-agents reference, GitLab remote setup.
 - `plan_rightsize.md` — synthesized framework spec consolidating `plan.md`–`plan6.md`.
+- `.gitlab-ci.yml` — GitLab pipeline mirroring `.github/workflows/claude-code.yml` (test stage on push/MR, manual `claude-code` stage).
+- `.gitlab/merge_request_templates/Default.md` — mirrors PR template; adds "Both remotes pushed" check.
+- `scripts/push-all.sh` — pushes current branch to every configured remote (GitHub + GitLab).
 
 ### Changed
 - `specs/_template.md` — slimmed from 7 sections to 3 required (Behavior, Acceptance Criteria, Out of Scope) + 3 optional (API, Data Model, Edge Cases).
-- `.claude/settings.json` — added `Stop` hook entry. Existing token-saving hooks (`post-tool-truncate`, `compact-trigger`, `caveman-reminder`) unchanged.
+- `.claude/settings.json` — added `Stop` hook entry; added `glab ci/mr/issue`, `git remote`, and `bash scripts/*` allow entries. Existing token-saving hooks unchanged.
+- `/ship` skill — validates `.gitlab-ci.yml` via `glab ci lint`; calls `scripts/push-all.sh` instead of `git push`. Both remotes must succeed.
+- `/create-pr` skill — opens both GitHub PR (`gh`) and GitLab MR (`glab`).
+- `/ci-fix` skill — detects red runs on both remotes (`gh run list` + `glab ci list`); fixes GitHub first when both red.
+- `CLAUDE.md` — dual-remote ship/CI rules; Keep a Changelog 1.1.0 reference; past-session context now lives in `.claude/state/` handover files.
+- `plan.md` Phase 7 expanded with GitLab artifacts; total artifact count 37 → 40.
 - GitHub default branch set to `main` (was `seed/team-collab-template`).
 
 ### Removed
-- N/A
+- `journal.md` and all references (`CLAUDE.md`, `README.md`, `stop.sh`, `session-start` skill, `plan.md`). Replaced by `.claude/state/` handover files.
 
 ## [0.1.0] - 2026-05-05
 

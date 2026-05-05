@@ -1,10 +1,15 @@
 ---
 name: ci-fix
-description: Fetch the latest CI failure logs, classify the failure, and fix it locally before pushing
+description: Fetch the latest CI failure logs from GitHub or GitLab, classify the failure, and fix it locally before pushing.
 ---
 
-1. `gh run list --limit 5 --json status,conclusion,name,databaseId,headBranch` — find the most recent failed run on a branch you own.
-2. `gh run view <id> --log-failed` — fetch the failure output.
+1. Detect which remote is red:
+   - `gh run list --limit 5 --json status,conclusion,name,databaseId,headBranch` (GitHub)
+   - `glab ci list --status=failed -P 5` (GitLab) — only if the `gitlab` remote is configured
+   Pick the most recent failed run on a branch you own. If both are red, fix the GitHub one first; the same diff usually fixes both.
+2. Fetch the failure output:
+   - GitHub: `gh run view <id> --log-failed`
+   - GitLab: `glab ci trace <pipeline-id>` (or `glab ci view <id>`)
 3. Classify the failure into exactly one category:
    - `lint` — ruff / flake8 / isort errors
    - `type` — mypy annotation errors

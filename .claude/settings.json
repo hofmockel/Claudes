@@ -28,7 +28,15 @@
       "Bash(gh run*)",
       "Bash(gh pr view*)",
       "Bash(gh pr list*)",
-      "Bash(gh issue*)"
+      "Bash(gh issue*)",
+      "Bash(glab ci*)",
+      "Bash(glab mr view*)",
+      "Bash(glab mr list*)",
+      "Bash(glab issue*)",
+      "Bash(git remote*)",
+      "Bash(bash scripts/push-all.sh)",
+      "Bash(bash scripts/preflight.sh)",
+      "Bash(bash scripts/local-ci.sh)"
     ],
     "deny": [
       "Bash(git push --force*)",

@@ -37,16 +37,25 @@ no spec discipline). This repo is the middle path.
 ### Setup
 
 ```bash
-# 1. Clone
+# 1. Clone (GitHub is primary; GitLab is mirror)
 git clone git@github.com:hofmockel/Claudes.git
 cd Claudes
 
-# 2. Personal settings (gitignored)
+# 2. Add the GitLab remote
+git remote add gitlab git@gitlab.com:<org>/Claudes.git
+git remote rename origin github   # optional clarity
+
+# 3. Personal settings (gitignored)
 cp .claude/settings.local.json.example .claude/settings.local.json
 
-# 3. Verify environment
+# 4. Verify environment
 bash scripts/preflight.sh
 ```
+
+**Dual-remote workflow.** Both GitHub and GitLab must stay in sync.
+Use `bash scripts/push-all.sh` (or `/ship`, which calls it) — it pushes the current
+branch to every configured remote. CI runs on both: `.github/workflows/claude-code.yml`
+and `.gitlab-ci.yml`.
 
 Expected output:
 
@@ -64,7 +73,7 @@ Expected output:
 
 ```bash
 claude              # opens Claude Code, loads CLAUDE.md + specs
-/session-start      # preflight + backlog + last journal + goal prompt
+/session-start      # preflight + backlog + last handover + goal prompt
 ```
 
 ### Build a feature
@@ -128,7 +137,6 @@ exit                # Stop hook also writes last-session-handover.md
 CLAUDE.md                Project-wide instructions loaded every session
 changelog.md             Keep a Changelog 1.1.0 format
 backlog.md               Open work items (append-only)
-journal.md               Session events log (past tense only)
 decisions.md             Architectural decision records
 
 specs/
@@ -153,6 +161,12 @@ scripts/
 .github/
   PULL_REQUEST_TEMPLATE.md
   workflows/claude-code.yml
+
+.gitlab/
+  merge_request_templates/Default.md
+.gitlab-ci.yml             GitLab pipeline (mirrors .github/workflows/claude-code.yml)
+
+scripts/push-all.sh        Push current branch to every configured remote
 ```
 
 ---

@@ -24,11 +24,11 @@ Your role is architect and reviewer, not typist. Claude builds; you:
 
 ## Documentation Discipline
 
-- `journal.md` / `journal.csv` = past events log only. Never write forward-looking items there.
 - `backlog.md`: append or edit in place only — never overwrite. Use Edit, not Write.
 - `plan.md` = future actions only.
-- `CHANGELOG.md`: one entry per commit, prepend (newest at top), not append.
+- `changelog.md`: [Keep a Changelog 1.1.0](https://keepachangelog.com/en/1.1.0/). Prepend new entries to `[Unreleased]`; never append.
 - `decisions.md`: architectural decisions. Do not mix into `specification.md` or changelog.
+- Past-session context lives in `.claude/state/` (handover files written by `/handover` and the Stop hook). No standalone journal.
 
 ## Verification Before Shipping
 
@@ -50,11 +50,13 @@ Use `/fix-bug` for all backlog items. Commit format: `fix: <one-line summary>`. 
 
 ## Pushing Code
 
-Use `/ship` before any `git push`. It runs ruff + mypy + pytest + actionlint and gates the push on all passing.
+Use `/ship` before any `git push`. It runs ruff + mypy + pytest + actionlint, validates `.gitlab-ci.yml` if present, then calls `scripts/push-all.sh` to push to **every** configured remote (GitHub + GitLab).
+
+A "ship" is not complete until both remotes accept the push. If one fails, retry only that remote (`git push <remote> <branch>`) — do not skip it.
 
 ## CI Failures
 
-Use `/ci-fix` when CI is red. Never push a "maybe this fixes it" commit without running the full local equivalent first.
+Use `/ci-fix` when CI is red on either remote. It checks GitHub via `gh` and GitLab via `glab`, classifies the failure, fixes locally, and re-verifies. Never push a "maybe this fixes it" commit without running the full local equivalent first.
 
 ## Parallel Bug Fixing
 

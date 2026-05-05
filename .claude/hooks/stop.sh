@@ -40,7 +40,7 @@ RECENT_COMMITS="$(git -C "$REPO_ROOT" log --oneline -5 2>/dev/null)"
   echo '```'
   echo
   echo "## Next steps"
-  echo "- Run \`/session-start\` to surface backlog + journal."
+  echo "- Run \`/session-start\` to surface backlog + last handover."
   echo "- Run \`/handover\` mid-session for a richer snapshot."
 } > "$OUT" 2>/dev/null
 

@@ -1,0 +1,46 @@
+# GitLab CI mirror of .github/workflows/claude-code.yml
+# Required CI/CD variables: ANTHROPIC_API_KEY (masked, protected)
+
+stages:
+  - test
+  - claude
+
+variables:
+  PIP_DISABLE_PIP_VERSION_CHECK: "1"
+
+.default_rules: &default_rules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
+test:
+  stage: test
+  image: python:3.12
+  <<: *default_rules
+  script:
+    # Replace with your real test command. Examples:
+    #   Python:  pip install -e ".[dev]" && pytest
+    #   Node:    npm ci && npm test
+    #   Go:      go test ./...
+    - echo "Replace this with your test command"
+
+claude-code:
+  stage: claude
+  image: node:20
+  rules:
+    # Manual dispatch only — equivalent of GitHub's workflow_dispatch.
+    - when: manual
+      allow_failure: true
+  variables:
+    PROMPT: "Review this MR and suggest improvements"
+  script:
+    - npm install -g @anthropic-ai/claude-code
+    - |
+      claude -p "$PROMPT" \
+        --max-turns 10 \
+        --allowedTools "Read,Grep,Glob,Bash" \
+      | tee claude-output.md
+  artifacts:
+    paths:
+      - claude-output.md
+    expire_in: 1 week
