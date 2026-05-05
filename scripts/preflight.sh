@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# preflight.sh — run before any portfolio or CI session to surface blockers early
+# preflight.sh — run at session start to surface env/toolchain blockers early
 
 set -euo pipefail
 
@@ -40,8 +40,6 @@ if [[ -f ".env" ]]; then
 else
   warn ".env file not found in $(pwd)"
 fi
-
-check_env "RH_ROTH_ACCOUNT_NUMBER" "Robinhood Roth account sync"
 
 # Add project-specific env vars here:
 # check_env "MY_API_KEY" "description"

@@ -12,7 +12,7 @@ Before editing ANY change that touches 3+ files, or any request containing the w
 
 ## Scope Discipline
 
-When a change can be narrower, make it narrower. A cash pass-through does not need multi-account support. A single-file bug fix does not need surrounding cleanup. If you catch yourself generalizing beyond the stated request, stop.
+When a change can be narrower, make it narrower. A single-file bug fix does not need surrounding cleanup. A one-shot helper does not need a generalized abstraction. If you catch yourself generalizing beyond the stated request, stop.
 
 ## Developer as Reviewer
 
@@ -39,10 +39,10 @@ Never propose deleting a confirmation or safety alert without explicit user appr
 ## Environment & Secrets
 
 All secrets load from `.env` — never hardcode. Required env vars:
-- `RH_ROTH_ACCOUNT_NUMBER` — Robinhood sync
 - `GITHUB_TOKEN` with `repo` + `workflow` scopes — gh CLI / PR creation
+- `GITLAB_TOKEN` — glab CLI / MR creation
 
-For any portfolio or CI work, run `scripts/preflight.sh` at session start. If env vars are missing, surface them immediately rather than failing mid-session.
+Run `scripts/preflight.sh` at session start. If env vars are missing, surface them immediately rather than failing mid-session.
 
 ## Bug Fix Workflow
 
