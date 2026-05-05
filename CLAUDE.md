@@ -58,6 +58,12 @@ A "ship" is not complete until both remotes accept the push. If one fails, retry
 
 Use `/ci-fix` when CI is red on either remote. It checks GitHub via `gh` and GitLab via `glab`, classifies the failure, fixes locally, and re-verifies. Never push a "maybe this fixes it" commit without running the full local equivalent first.
 
-## Parallel Bug Fixing
+## Parallel Work
 
-Use `/batch-fix` for 5+ independent backlog items. It spawns sub-agents with git worktrees so agents do not collide on shared files.
+`/batch-fix` is the only sanctioned multi-agent path. It spawns 2–5 sub-agents in git worktrees and is the right tool for independent backlog items.
+
+Rules for any parallel work:
+- Agents must operate on disjoint files. If two tasks touch the same file, sequence them — never let two worktrees write to the same path.
+- When the parallel tasks share an interface or contract, land that contract in a single seed commit on `main` first, then fan out.
+- Start with 2–3 agents on unfamiliar territory; scale to 5 only when the file-disjointness check is obvious.
+- Do not invent ad-hoc role splits (PM / architect / engineer). Plan mode + `/review` already cover the architect/reviewer hat.

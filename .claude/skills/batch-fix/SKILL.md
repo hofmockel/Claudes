@@ -1,9 +1,9 @@
 ---
 name: batch-fix
-description: Parallel sub-agent burn-down of 5 independent backlog bugs using git worktrees
+description: Parallel sub-agent burn-down of independent backlog bugs using git worktrees
 ---
 
-1. Read `backlog.md`. Select exactly 5 unchecked bugs that have NO shared files between them (verify by reading each bug description and the relevant source files).
+1. Read `backlog.md`. Select **2 to 5** unchecked bugs that have NO shared files between them (verify by reading each bug description and the relevant source files). If any two candidates share a file, drop one or sequence them — never let two worktrees touch the same file. If selected bugs share an interface or contract, land that contract in a single seed commit on `main` first, then fan out.
 
 2. For each of the 5 bugs, spawn a parallel Task sub-agent with these exact instructions:
    ```
@@ -22,7 +22,7 @@ description: Parallel sub-agent burn-down of 5 independent backlog bugs using gi
    10. Report back: PR URL, or the exact error if blocked.
    ```
 
-3. Wait for all 5 agents to return. Print a results table:
+3. Wait for all agents to return. Print a results table:
    | Bug | Status | PR URL |
    |-----|--------|--------|
 
