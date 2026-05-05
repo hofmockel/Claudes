@@ -14,6 +14,14 @@ Before editing ANY change that touches 3+ files, or any request containing the w
 
 When a change can be narrower, make it narrower. A cash pass-through does not need multi-account support. A single-file bug fix does not need surrounding cleanup. If you catch yourself generalizing beyond the stated request, stop.
 
+## Developer as Reviewer
+
+Your role is architect and reviewer, not typist. Claude builds; you:
+- Approve plans before execution (plan mode)
+- Review diffs before commits (`/review`)
+- Own architectural decisions (`decisions.md`)
+- Reject any output that deviates from scope
+
 ## Documentation Discipline
 
 - `journal.md` / `journal.csv` = past events log only. Never write forward-looking items there.

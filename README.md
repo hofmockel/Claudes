@@ -43,8 +43,9 @@ claude          # opens Claude Code — reads CLAUDE.md + specs automatically
 | `/review` | Self-review diff against `REVIEW.md` — BLOCKERS / SUGGESTIONS / LOOKS GOOD |
 | `/ship` | Full pipeline: test → lint → review → commit → push → PR |
 | `/check-drift` | Check each spec's Acceptance Criteria against the implementation |
-
-Existing skills: `/fix-bug`, `/ship` (local CI gate), `/ci-fix`, `/batch-fix` — see `.claude/skills/`.
+| `/fix-bug` | Atomic bug fix with regression test from `backlog.md` |
+| `/ci-fix` | Fetch failed CI run, classify failure, fix and re-verify |
+| `/batch-fix` | Parallel 5-bug burn-down via git worktrees |
 
 ---
 
@@ -78,11 +79,21 @@ Write spec  →  @-import in CLAUDE.md  →  implement  →  /check-drift  →  
 | `gh run/pr view/issue` | `curl \| sh`, `dd`, `mkfs` |
 | | `Read(.env)`, `Read(*.key)` |
 
-Personal approvals (your own `git commit`, `git push`, `pip install`, etc.) go in `.claude/settings.local.json` (gitignored).
+Personal approvals (`git commit`, `git push`, `pip install`, etc.) go in `.claude/settings.local.json` (gitignored). Use `settings.local.json.example` as a starting point.
 
-Two hooks run automatically:
-- **`pre-bash-safety.sh`** — blocks dangerous patterns before execution
-- **`post-edit-lint.sh`** — runs `ruff` after every `.py` edit (lint stubs for other languages available, commented out)
+### Hooks (run automatically on every tool use)
+
+| Hook | Trigger | What it does |
+|---|---|---|
+| `pre-bash-safety.sh` | PreToolUse: Bash | Hard-blocks dangerous patterns (`rm -rf *`, `dd`, `curl\|sh`, etc.) |
+| `post-edit-lint.sh` | PostToolUse: Edit/Write | Runs `ruff` after `.py` edits; stubs for JS/TS, Go, Ruby, shell |
+| `post-tool-truncate.sh` | PostToolUse: Bash/Read/WebFetch | Caps output at 4,000 chars to protect context window |
+| `compact-trigger.sh` | PostToolUse: all | Nudges `/compact` when transcript exceeds ~500KB |
+| `caveman-reminder.sh` | PostToolUse: all | Detects verbose filler prose, nudges terseness |
+
+Exit codes: `0` = allow, `1` = hard block, `2` = soft signal (Claude sees message and continues).
+
+Override the truncation limit: `export LESS_TOKENS_MAX_CHARS=8000` in your shell.
 
 ---
 
@@ -102,38 +113,44 @@ Trigger manually: `Actions → CI → Run workflow`.
 ## What's in this repo
 
 ```
-CLAUDE.md                  Session instructions — read at every session start
-REVIEW.md                  Review checklist — used by /review and @claude review
-.worktreeinclude           Files copied into new worktrees
+CLAUDE.md                    Session instructions — read at every session start
+CLAUDE.local.md.example      Personal notes template (copy → CLAUDE.local.md, gitignored)
+REVIEW.md                    Review checklist — used by /review and @claude review
+.claudeignore                Files excluded from Claude's read scope
+.worktreeinclude             Files copied into new worktrees
 
-specs/                     Feature specifications (source of truth for behavior)
-  README.md                How to write and use specs
-  _template.md             Blank spec template
-  example-feature.md       Worked example (replace with real specs)
+specs/
+  README.md                  How to write and use specs
+  _template.md               Blank spec template
+  example-feature.md         Worked example (replace with real specs)
 
 .claude/
-  settings.json            Team permissions + hooks (committed, shared)
+  settings.json              Team permissions + hooks (committed, shared)
   settings.local.json.example  Personal approvals template (copy → gitignored)
   rules/
-    security.md            Always-active security rules
-    api-design.md          API conventions (activates for src/api/**)
-    testing.md             Test conventions (activates for tests/**)
+    security.md              Always active — secrets, input validation, PII
+    api-design.md            Activates for src/api/** — REST conventions, error envelope
+    testing.md               Activates for tests/** — naming, mocking, coverage
+    caveman.md               Always active — prose discipline, no filler
   hooks/
-    pre-bash-safety.sh     PreToolUse: blocks dangerous bash patterns
-    post-edit-lint.sh      PostToolUse: lints after file edits
+    pre-bash-safety.sh       PreToolUse: hard-blocks dangerous bash patterns
+    post-edit-lint.sh        PostToolUse: lint after file edits
+    post-tool-truncate.sh    PostToolUse: cap large tool outputs at 4K chars
+    compact-trigger.sh       PostToolUse: nudge /compact at ~500KB transcript
+    caveman-reminder.sh      PostToolUse: nudge terse prose when filler detected
   skills/
-    commit/                /commit — conventional commit
-    create-pr/             /create-pr — push + open PR
-    review/                /review — self-review checklist
-    check-drift/           /check-drift — spec vs implementation
-    fix-bug/               /fix-bug — atomic bug fix with regression test
-    ship/                  /ship — pre-push CI gate
-    ci-fix/                /ci-fix — fetch + fix failed CI run
-    batch-fix/             /batch-fix — parallel 5-bug burn-down
+    commit/                  /commit — conventional commit with approval gate
+    create-pr/               /create-pr — push + open PR
+    review/                  /review — self-review checklist
+    check-drift/             /check-drift — spec vs implementation
+    fix-bug/                 /fix-bug — atomic bug fix with regression test
+    ship/                    /ship — pre-push CI gate (ruff + mypy + pytest)
+    ci-fix/                  /ci-fix — fetch + fix failed CI run
+    batch-fix/               /batch-fix — parallel 5-bug burn-down
 
 scripts/
-  preflight.sh             Session start env + toolchain check
-  local-ci.sh              Local CI equivalent
+  preflight.sh               Session start env + toolchain check
+  local-ci.sh                Local CI equivalent
 
 .github/
   PULL_REQUEST_TEMPLATE.md
